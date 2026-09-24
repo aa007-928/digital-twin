@@ -1,0 +1,24 @@
+{
+  "full_name": "Aayush",
+  "name": "Aayush",
+  "current_role": "Machine Learning Engineer",
+  "location": "USA",
+  "email": "abhadani.9287@gmail.com",
+  "linkedin": "",
+  "mobile": "",
+  "specialties": [
+    "Machine Learning",
+    "Software Development",
+    "Data Engineering",
+    "Data Analysis",
+    "Product Development"
+  ],
+  "years_experience": 5,
+  "education": [
+    {
+      "degree": "MS Electrical and Computer Engineering",
+      "institution": "Purdue University",
+      "year": "2024"
+    }
+  ]
+}
