@@ -9,6 +9,10 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 6.0"
     }
+    http = {
+      source  = "hashicorp/http"
+      version = "~> 3.4"
+    }
   }
 }
 
@@ -28,6 +32,16 @@ variable "github_repository" {
 
 # Data source to get current AWS account ID
 data "aws_caller_identity" "current" {}
+
+data "http" "github_repo" {
+  url             = "https://api.github.com/repos/${var.github_repository}"
+  request_headers = { Accept = "application/vnd.github+json" }
+}
+
+locals {
+  github_repo    = jsondecode(data.http.github_repo.response_body)
+  github_subject = "repo:${local.github_repo.owner.login}@${local.github_repo.owner.id}/${local.github_repo.name}@${local.github_repo.id}"
+}
 
 # GitHub OIDC Provider
 # Note: If this already exists in your account, you'll need to import it:
@@ -65,7 +79,10 @@ resource "aws_iam_role" "github_actions" {
             "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com"
           }
           StringLike = {
-            "token.actions.githubusercontent.com:sub" = "repo:${var.github_repository}:*"
+            "token.actions.githubusercontent.com:sub" = [
+              "${local.github_subject}:environment:*",
+              "${local.github_subject}:ref:refs/heads/*"
+            ]
           }
         }
       }
